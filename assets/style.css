@@ -471,6 +471,25 @@ button {
   position: relative;
 }
 
+.slide-framed-img {
+  width: 100%;
+  max-height: 85dvh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-deep);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: zoom-in;
+}
+
+.slide-framed-img.zoomed {
+  transform: scale(1.4);
+  z-index: 50;
+  cursor: zoom-out;
+  box-shadow: 0 0 100px rgba(0,0,0,0.9);
+}
+
 .slide-framed-img-wrap::before {
   /* Gold border accent — top-left corner ornament */
   content: '';
@@ -613,11 +632,7 @@ button {
   max-width: min(900px, 90vw);
   width: 100%;
   padding: var(--sp-12);
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-deep);
+  /* Removed box background, border, and shadow for a floating text look */
   position: relative;
   z-index: 2;
   opacity: 0;
@@ -782,7 +797,7 @@ button {
   }
 
   .hero-subtitle {
-    display: none;
+    font-size: 1.1rem; /* keep it visible, just smaller */
   }
 }
 

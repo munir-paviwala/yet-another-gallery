@@ -140,15 +140,12 @@ function buildFramedSlide(item, lightboxIndex) {
  * Text slide (type: 'text')
  */
 function buildTextSlide(item) {
-  const dateStr = formatDate(item.date);
-
   const slide = document.createElement('div');
   slide.className = 'gallery-slide slide-text';
   slide.setAttribute('role', 'listitem');
 
   slide.innerHTML = `
     <div class="slide-text-inner">
-      ${dateStr     ? `<span class="slide-text-eyebrow">${esc(dateStr)}</span>` : ''}
       ${item.title  ? `<h2 class="slide-text-title">${esc(item.title)}</h2>` : ''}
       ${item.body   ? `<div class="slide-text-body">${esc(item.body)}</div>` : ''}
     </div>
@@ -213,18 +210,29 @@ function renderGallery(data) {
 }
 
 // ── Fullscreen Toggle ─────────────────────────────────────────────────────────
+function tryEnterFullscreen() {
+  if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen().catch(() => {
+      // Ignore errors if user gesture wasn't strong enough
+    });
+  }
+}
+
+// Auto-enter fullscreen on first interaction
+document.body.addEventListener('click', function autoFullscreen() {
+  tryEnterFullscreen();
+  document.body.removeEventListener('click', autoFullscreen);
+}, { once: true });
+
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 if (fullscreenBtn) {
-  fullscreenBtn.addEventListener('click', () => {
+  fullscreenBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // prevent double trigger with body click
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
-      });
-      fullscreenBtn.textContent = 'exit fullscreen';
+      tryEnterFullscreen();
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-        fullscreenBtn.textContent = 'enter fullscreen';
       }
     }
   });
