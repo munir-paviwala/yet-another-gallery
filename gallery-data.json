@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "yet another gallery",
+    "subtitle": "a collection"
+  },
+  "items": [
+    {
+      "id": "opening",
+      "type": "text",
+      "title": "welcome",
+      "body": "this is a small place for things i find beautiful, interesting, or worth keeping.\n\nthere's no real theme. no careful curation. just a collection of moments that made me stop and look a little longer.",
+      "date": { "year": 2024 }
+    },
+    {
+      "id": "demo-001",
+      "type": "image",
+      "file": "images/demo/image-01.png",
+      "title": "monsoon light",
+      "caption": "the kind of grey that makes everything else look saturated. pink neon bleeding into wet asphalt. nobody is in a hurry but nobody is still either.",
+      "date": { "year": 2024, "month": 7 },
+      "size": "full"
+    },
+    {
+      "id": "spacer-1",
+      "type": "spacer",
+      "variant": "small"
+    },
+    {
+      "id": "demo-002",
+      "type": "image",
+      "file": "images/demo/image-02.png",
+      "title": "zardozi",
+      "caption": "gulaabi phool on dark silk. someone's hands made this. probably at night.",
+      "date": { "year": 2024, "month": 8 },
+      "size": "framed"
+    },
+    {
+      "id": "mid-thought",
+      "type": "text",
+      "title": "a note on seeing",
+      "body": "photography for me is less about capturing and more about remembering why something stopped me in my tracks.\n\nthe image is just a receipt.",
+      "date": { "year": 2024, "month": 9 }
+    },
+    {
+      "id": "demo-003",
+      "type": "image",
+      "file": "images/demo/image-03.png",
+      "title": "nightfall",
+      "caption": "when the sky forgets to be blue. somewhere between maghrib and isha, the city exhales.",
+      "date": { "year": 2024, "month": 10 },
+      "size": "full"
+    },
+    {
+      "id": "spacer-end",
+      "type": "spacer",
+      "variant": "large"
+    }
+  ]
+}
