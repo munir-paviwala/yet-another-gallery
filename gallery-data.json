@@ -1,13 +1,13 @@
 {
   "meta": {
     "title": "yet another gallery",
-    "subtitle": "a collection"
+    "subtitle": "but Munir's"
   },
   "items": [
     {
       "id": "opening",
       "type": "text",
-      "title": "welcome",
+      "title": "Welcome",
       "body": "this is a small place for things i find beautiful, interesting, or worth keeping.\n\nthere's no real theme. no careful curation. just a collection of moments that made me stop and look a little longer.",
       "date": {
         "year": 2024
@@ -16,17 +16,29 @@
     {
       "id": "spacer-end",
       "type": "spacer",
-      "variant": "large"
+      "variant": "rule"
+    },
+    {
+      "id": "item-mq99qenr-m4h3",
+      "type": "image",
+      "file": "images/you work better when not .png",
+      "title": "Stealing non-Perfectionism",
+      "caption": "Stealing quotes and designs, one image at a time. ",
+      "date": {
+        "year": 2026,
+        "month": 6
+      },
+      "size": "full"
     },
     {
       "id": "item-mq99qenr-6qmj",
       "type": "image",
       "file": "images/Document.png",
-      "title": "",
-      "caption": "",
+      "title": "Textures",
+      "caption": "As I explored finding my style in Digital collage-ing. I found that the patterns I found, needed a good texture to fit in to the visions I had.",
       "date": {
         "year": 2026,
-        "month": 06,
+        "month": 6,
         "date": 11
       },
       "size": "full"
@@ -35,11 +47,11 @@
       "id": "item-mq99qenr-vv99",
       "type": "image",
       "file": "images/first step trying.png",
-      "title": "first step trying",
-      "caption": "",
+      "title": "Selective seeing",
+      "caption": "I wanted some ways to make things fun. this was a recreation of some other piece.",
       "date": {
         "year": 2026,
-        "month": 06,
+        "month": 6,
         "date": 11
       },
       "size": "full"
@@ -49,48 +61,54 @@
       "type": "image",
       "file": "images/onemoretime.png",
       "title": "onemoretime",
-      "caption": "Because why not?",
+      "caption": "Because why not? ",
       "date": {
         "year": 2026,
-        "month": 06
+        "month": 6
       },
       "size": "framed"
+    },
+    {
+      "id": "item-mq9eiccy-o42m",
+      "type": "text",
+      "title": "Something I like a lot is coming up",
+      "body": "",
+      "date": {
+        "year": 2026
+      }
     },
     {
       "id": "item-mq99qenr-h0xe",
       "type": "image",
       "file": "images/overlay.png",
-      "title": "overlay",
-      "caption": "More trying overlays",
+      "title": "overlays",
+      "caption": "In the series of textures, this is the first time, I was able to play with the world I have known/seen - to build fun textures together by overlaying them all",
       "date": {
         "year": 2026,
-        "month": 06
+        "month": 6
       },
-      "size": "full"
+      "size": "framed"
     },
     {
       "id": "item-mq99qenr-4qtl",
       "type": "image",
       "file": "images/textile bg.png",
-      "title": "textile bg",
-      "caption": "the best kind of bg",
+      "title": "Picking Textile Dreams w/ Mamma",
+      "caption": "Colors, textiles, and memories with Mamma",
       "date": {
         "year": 2026,
-        "month": 06
+        "month": 6
       },
-      "size": "full"
+      "size": "framed"
     },
     {
-      "id": "item-mq99qenr-m4h3",
-      "type": "image",
-      "file": "images/you work better when not .png",
-      "title": "you work better when not ",
-      "caption": "Stealing quotes and designs, one image at a time",
+      "id": "item-mq9eitqu-dl18",
+      "type": "text",
+      "title": "Thank you! ",
+      "body": "Let me know what you think, or if you want to know more how I created them. \n\nI used Affinity in my mac to make these. More than anything, they were generally quite fun to make. ",
       "date": {
-        "year": 2026,
-        "month": 06
-      },
-      "size": "full"
+        "year": 2026
+      }
     }
   ]
 }

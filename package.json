@@ -1,0 +1,12 @@
+{
+  "name": "yet-another-gallery",
+  "version": "1.0.0",
+  "description": "A visual collection.",
+  "main": "index.js",
+  "scripts": {
+    "edit": "node scripts/editor.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

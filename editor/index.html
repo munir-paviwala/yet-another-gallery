@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <style>
+    :root {
+      --bg: #1a0018;
+      --surface: #240020;
+      --surface-2: #330030;
+      --text: #f0dce8;
+      --text-muted: #b08aa0;
+      --accent: #ff4081;
+      --radius: 8px;
+    }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 64, 129, 0.2);
+      padding-bottom: 1rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .meta-editor {
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+    }
+    label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    input, textarea, select {
+      background: var(--surface-2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: 1px solid var(--accent);
+      border-color: var(--accent);
+    }
+    .items-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .item-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      border: 1px solid transparent;
+    }
+    .item-card.sortable-ghost {
+      opacity: 0.4;
+      border: 1px dashed var(--accent);
+    }
+    .drag-handle {
+      cursor: grab;
+      color: var(--text-muted);
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+    .item-preview {
+      width: 150px;
+      height: 100px;
+      object-fit: contain;
+      background: rgba(0,0,0,0.3);
+      border-radius: 4px;
+    }
+    .item-preview-text {
+      width: 150px;
+      height: 100px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .item-form {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .item-form .full-width {
+      grid-column: 1 / -1;
+    }
+    .date-inputs {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .date-inputs input {
+      width: 60px;
+    }
+    .date-inputs input[name="year"] {
+      width: 80px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--green, #00e676);
+      color: #000;
+      padding: 1rem;
+      border-radius: 4px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Gallery Editor</h1>
+    <div style="display: flex; gap: 1rem;">
+      <button class="btn" style="background: rgba(255,255,255,0.1);" id="add-text-btn">+ Text Slide</button>
+      <button class="btn" style="background: rgba(255,255,255,0.1);" id="add-spacer-btn">+ Spacer</button>
+      <button class="btn" id="save-btn">Save Changes</button>
+    </div>
+  </header>
+
+  <div class="meta-editor" id="meta-editor">
+    <div class="input-group">
+      <label>Gallery Title</label>
+      <input type="text" id="meta-title">
+    </div>
+    <div class="input-group">
+      <label>Gallery Subtitle</label>
+      <input type="text" id="meta-subtitle">
+    </div>
+  </div>
+
+  <div class="items-grid" id="items-container">
+    <!-- Items will be injected here -->
+  </div>
+
+  <div class="toast" id="toast">Saved successfully!</div>
+
+  <script>
+    let manifestData = null;
+
+    async function loadData() {
+      const res = await fetch('/api/data');
+      manifestData = await res.json();
+      render();
+    }
+
+    function render() {
+      document.getElementById('meta-title').value = manifestData.meta.title || '';
+      document.getElementById('meta-subtitle').value = manifestData.meta.subtitle || '';
+
+      const container = document.getElementById('items-container');
+      container.innerHTML = '';
+
+      manifestData.items.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.dataset.id = item.id;
+
+        let previewHtml = '';
+        if (item.type === 'image' || item.type === 'gif') {
+          previewHtml = `<img src="/${item.file}" class="item-preview" alt="preview">`;
+        } else {
+          previewHtml = `<div class="item-preview-text">${item.type.toUpperCase()}</div>`;
+        }
+
+        const date = item.date || {};
+        
+        div.innerHTML = `
+          <div class="drag-handle">≡</div>
+          ${previewHtml}
+          <div class="item-form">
+            ${item.type === 'text' ? `
+              <div class="input-group full-width">
+                <label>Title</label>
+                <input type="text" data-field="title" value="${item.title || ''}">
+              </div>
+              <div class="input-group full-width">
+                <label>Body</label>
+                <textarea data-field="body" rows="3">${item.body || ''}</textarea>
+              </div>
+            ` : item.type === 'spacer' ? `
+              <div class="input-group">
+                <label>Variant</label>
+                <select data-field="variant">
+                  <option value="small" ${item.variant === 'small' ? 'selected' : ''}>Small</option>
+                  <option value="medium" ${item.variant === 'medium' ? 'selected' : ''}>Medium</option>
+                  <option value="large" ${item.variant === 'large' ? 'selected' : ''}>Large</option>
+                  <option value="rule" ${item.variant === 'rule' ? 'selected' : ''}>Rule</option>
+                </select>
+              </div>
+            ` : `
+              <div class="input-group">
+                <label>Title</label>
+                <input type="text" data-field="title" value="${item.title || ''}">
+              </div>
+              <div class="input-group">
+                <label>Layout Size</label>
+                <select data-field="size">
+                  <option value="full" ${item.size === 'full' ? 'selected' : ''}>Full Width</option>
+                  <option value="framed" ${item.size === 'framed' ? 'selected' : ''}>Framed</option>
+                </select>
+              </div>
+              <div class="input-group full-width">
+                <label>Caption</label>
+                <input type="text" data-field="caption" value="${item.caption || ''}">
+              </div>
+              <div class="input-group full-width">
+                <label>Date (YYYY, MM, DD)</label>
+                <div class="date-inputs">
+                  <input type="number" data-field="date.year" placeholder="YYYY" value="${date.year || ''}">
+                  <input type="number" data-field="date.month" placeholder="MM" value="${date.month || ''}">
+                  <input type="number" data-field="date.date" placeholder="DD" value="${date.date || ''}">
+                </div>
+              </div>
+            `}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      // Initialize Sortable
+      new Sortable(container, {
+        handle: '.drag-handle',
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: updateOrder
+      });
+    }
+
+    function updateOrder() {
+      const newOrderIds = Array.from(document.querySelectorAll('.item-card')).map(el => el.dataset.id);
+      manifestData.items = newOrderIds.map(id => manifestData.items.find(i => i.id === id));
+    }
+
+    function collectData() {
+      manifestData.meta.title = document.getElementById('meta-title').value;
+      manifestData.meta.subtitle = document.getElementById('meta-subtitle').value;
+
+      document.querySelectorAll('.item-card').forEach(card => {
+        const id = card.dataset.id;
+        const item = manifestData.items.find(i => i.id === id);
+        
+        card.querySelectorAll('input, textarea, select').forEach(input => {
+          const field = input.dataset.field;
+          const val = input.value;
+          
+          if (field.startsWith('date.')) {
+            const key = field.split('.')[1];
+            if (!item.date) item.date = {};
+            if (val) {
+              item.date[key] = parseInt(val, 10);
+            } else {
+              delete item.date[key];
+            }
+          } else {
+            item[field] = val;
+          }
+        });
+      });
+    }
+
+    document.getElementById('save-btn').addEventListener('click', async () => {
+      collectData();
+      
+      const btn = document.getElementById('save-btn');
+      btn.textContent = 'Saving...';
+      
+      try {
+        const res = await fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(manifestData)
+        });
+        
+        if (res.ok) {
+          const toast = document.getElementById('toast');
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+      } catch (err) {
+        alert('Failed to save!');
+      } finally {
+        btn.textContent = 'Save Changes';
+      }
+    });
+
+    function makeId() {
+      return `item-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    }
+
+    document.getElementById('add-text-btn').addEventListener('click', () => {
+      collectData();
+      manifestData.items.push({
+        id: makeId(),
+        type: 'text',
+        title: 'New Text Slide',
+        body: '',
+        date: { year: new Date().getFullYear() }
+      });
+      render();
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    document.getElementById('add-spacer-btn').addEventListener('click', () => {
+      collectData();
+      manifestData.items.push({
+        id: makeId(),
+        type: 'spacer',
+        variant: 'large'
+      });
+      render();
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

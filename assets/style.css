@@ -236,10 +236,16 @@ button {
   letter-spacing: -0.025em;
   line-height: 0.95;
   color: var(--text);
+  text-shadow: 0 0 30px rgba(255, 64, 129, 0.4), 0 0 60px rgba(255, 64, 129, 0.2);
   margin: var(--sp-6) 0 var(--sp-6);
   opacity: 0;
-  animation: reveal-up 1.1s var(--t-slow) both;
+  animation: reveal-up 1.1s var(--t-slow) both, subtle-pulse 4s ease-in-out infinite alternate;
   animation-delay: 0.35s;
+}
+
+@keyframes subtle-pulse {
+  from { text-shadow: 0 0 20px rgba(255, 64, 129, 0.3), 0 0 40px rgba(255, 64, 129, 0.1); }
+  to { text-shadow: 0 0 40px rgba(255, 64, 129, 0.6), 0 0 80px rgba(255, 64, 129, 0.3); }
 }
 
 .hero-subtitle {
@@ -255,30 +261,7 @@ button {
   animation-delay: 0.65s;
 }
 
-.hero-enter {
-  display: inline-block;
-  margin-top: var(--sp-12);
-  font-family: var(--font-ui);
-  font-size: 0.85rem;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: lowercase;
-  color: var(--text-muted);
-  padding-bottom: 3px;
-  border-bottom: 1px solid rgba(176, 138, 160, 0.3);
-  transition:
-    color var(--t-base),
-    border-color var(--t-base),
-    letter-spacing var(--t-base);
-  opacity: 0;
-  animation: reveal-up 0.9s var(--t-slow) both;
-  animation-delay: 0.95s;
-}
-.hero-enter:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  letter-spacing: 0.25em;
-}
+
 
 /* Scroll indicator */
 .scroll-hint {
