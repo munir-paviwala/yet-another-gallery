@@ -9,7 +9,9 @@
       "type": "text",
       "title": "Welcome",
       "body": "this is a small place for things i find beautiful, interesting, or worth keeping.\n\nthere's no real theme. no careful curation. just a collection of moments that made me stop and look a little longer.",
-      "date": {}
+      "date": {
+        "year": 2024
+      }
     },
     {
       "id": "spacer-end",
@@ -58,8 +60,8 @@
       "id": "item-mq99qenr-4bb7",
       "type": "image",
       "file": "images/onemoretime.png",
-      "title": "onemoretime",
-      "caption": "Because why not? ",
+      "title": "Repeat - one more time",
+      "caption": "Because why not? And also because Daft Punk also said \"ONE MORE TIME\"",
       "date": {
         "year": 2026,
         "month": 6
@@ -69,8 +71,8 @@
     {
       "id": "item-mq9eiccy-o42m",
       "type": "text",
-      "title": "Something I like a lot is coming up",
-      "body": "",
+      "title": "Now for things that I like a lot:",
+      "body": "A lot of times, the digital design world has been flat. FLAT! The whole of my instagram and internet is flat - just minimalist and flat. ",
       "date": {
         "year": 2026
       }
