@@ -69,25 +69,9 @@
     <!-- Slides injected by app.js -->
   </div>
 
-  <!-- ══ LIGHTBOX ══════════════════════════════════════════════════════════ -->
-  <dialog class="lightbox" id="lightbox" aria-label="Image lightbox" aria-modal="true">
-    <button class="lightbox-close" id="lightbox-close" aria-label="Close lightbox" type="button">✕</button>
-
-    <div class="lightbox-inner">
-      <img class="lightbox-img" id="lightbox-img" src="" alt="" fetchpriority="high">
-      <div class="lightbox-meta" id="lightbox-meta">
-        <h2 class="lightbox-title" id="lightbox-title"></h2>
-        <p class="lightbox-caption" id="lightbox-caption"></p>
-        <time class="lightbox-date" id="lightbox-date"></time>
-      </div>
-    </div>
-
-    <nav class="lightbox-nav" aria-label="Navigate images">
-      <button class="lightbox-nav-btn" id="lightbox-prev" type="button" aria-label="Previous image">←</button>
-      <span class="lightbox-counter" id="lightbox-counter" aria-live="polite" aria-atomic="true"></span>
-      <button class="lightbox-nav-btn" id="lightbox-next" type="button" aria-label="Next image">→</button>
-    </nav>
-  </dialog>
+  <button class="fullscreen-btn" id="fullscreen-btn" aria-label="Toggle Fullscreen">
+    enter fullscreen
+  </button>
 
   <script src="assets/app.js" type="module"></script>
 </body>

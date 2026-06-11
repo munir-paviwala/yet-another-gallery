@@ -61,28 +61,34 @@ function buildFullSlide(item, lightboxIndex) {
   const hasCaption = item.title || item.caption || dateStr;
 
   slide.innerHTML = `
-    <img
-      class="slide-img"
-      src="${esc(item.file)}"
-      alt="${esc(item.title ?? '')}"
-      loading="lazy"
-      decoding="async"
-    >
+    <div class="slide-img-sticky">
+      <img
+        class="slide-img"
+        src="${esc(item.file)}"
+        alt="${esc(item.title ?? '')}"
+        loading="lazy"
+        decoding="async"
+      >
+    </div>
     ${hasCaption ? `
-      <div class="slide-caption-overlay" aria-hidden="true">
-        ${item.title   ? `<p class="slide-caption-title">${esc(item.title)}</p>` : ''}
-        ${item.caption ? `<p class="slide-caption-sub">${esc(item.caption)}</p>` : ''}
-        ${dateStr      ? `<time class="slide-caption-date">${esc(dateStr)}</time>` : ''}
+      <div class="slide-caption-scroll-container">
+        <div class="slide-caption-content" aria-hidden="true">
+          ${item.title   ? `<p class="slide-caption-title">${esc(item.title)}</p>` : ''}
+          ${item.caption ? `<p class="slide-caption-sub">${esc(item.caption)}</p>` : ''}
+          ${dateStr      ? `<time class="slide-caption-date">${esc(dateStr)}</time>` : ''}
+        </div>
       </div>
     ` : ''}
-    <span class="slide-click-hint">click to expand</span>
   `;
 
-  // Open lightbox on click
-  slide.addEventListener('click', () => openLightbox(lightboxIndex));
-  slide.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(lightboxIndex); }
-  });
+  // Zoom on click
+  const img = slide.querySelector('.slide-img');
+  if (img) {
+    img.addEventListener('click', () => {
+      img.classList.toggle('zoomed');
+    });
+  }
+
   slide.setAttribute('tabindex', '0');
   slide.setAttribute('aria-label', item.title ? `Open: ${item.title}` : 'Open image');
 
@@ -119,8 +125,13 @@ function buildFramedSlide(item, lightboxIndex) {
     </div>
   `;
 
-  // Clicking the image opens lightbox
-  slide.querySelector('.slide-framed-img').addEventListener('click', () => openLightbox(lightboxIndex));
+  // Clicking the image zooms it
+  const img = slide.querySelector('.slide-framed-img');
+  if (img) {
+    img.addEventListener('click', () => {
+      img.classList.toggle('zoomed');
+    });
+  }
 
   return slide;
 }
@@ -201,12 +212,33 @@ function renderGallery(data) {
   initCounterBadge(slides);
 }
 
+// ── Fullscreen Toggle ─────────────────────────────────────────────────────────
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+      fullscreenBtn.textContent = 'exit fullscreen';
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        fullscreenBtn.textContent = 'enter fullscreen';
+      }
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      fullscreenBtn.textContent = 'enter fullscreen';
+    } else {
+      fullscreenBtn.textContent = 'exit fullscreen';
+    }
+  });
+}
+
 // ── Slide Active Observer ─────────────────────────────────────────────────────
-/**
- * When a slide enters the viewport (≥60% visible), mark it `is-active`.
- * When it leaves, remove the class — so the animation re-fires next visit.
- * For full-bleed image slides, the caption CSS animation auto-runs via the class.
- */
 function initSlideObserver(slides) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     slides.forEach((s) => s.classList.add('is-active'));
@@ -219,14 +251,11 @@ function initSlideObserver(slides) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-active');
         } else {
-          // Remove so caption re-animates if user scrolls back
           entry.target.classList.remove('is-active');
         }
       });
     },
-    {
-      threshold: 0.6, // slide must be 60% visible to be "active"
-    }
+    { threshold: 0.6 }
   );
 
   slides.forEach((s) => observer.observe(s));
@@ -239,12 +268,8 @@ function initCounterBadge(slides) {
   badge.id = 'slide-counter-badge';
   document.body.appendChild(badge);
 
-  // Only count image/text slides, not spacers
-  const countedSlides = slides.filter(
-    (s) => !s.classList.contains('slide-spacer')
-  );
+  const countedSlides = slides.filter(s => !s.classList.contains('slide-spacer'));
   const total = countedSlides.length;
-
   let hideTimer;
 
   const observer = new IntersectionObserver(
@@ -266,66 +291,6 @@ function initCounterBadge(slides) {
 
   countedSlides.forEach((s) => observer.observe(s));
 }
-
-// ── Lightbox ──────────────────────────────────────────────────────────────────
-const lightbox  = document.getElementById('lightbox');
-const lbImg     = document.getElementById('lightbox-img');
-const lbTitle   = document.getElementById('lightbox-title');
-const lbCaption = document.getElementById('lightbox-caption');
-const lbDate    = document.getElementById('lightbox-date');
-const lbCounter = document.getElementById('lightbox-counter');
-const lbPrev    = document.getElementById('lightbox-prev');
-const lbNext    = document.getElementById('lightbox-next');
-const lbClose   = document.getElementById('lightbox-close');
-
-function openLightbox(index) {
-  if (!lightbox || index < 0 || index >= imageItems.length) return;
-  currentIndex = index;
-  populateLightbox(index);
-  lightbox.showModal();
-}
-
-function populateLightbox(index) {
-  const item = imageItems[index];
-  if (!item) return;
-
-  lbImg.src = item.file;
-  lbImg.alt = item.title ?? '';
-
-  lbTitle.textContent = item.title ?? '';
-  lbTitle.hidden = !item.title;
-
-  lbCaption.textContent = item.caption ?? '';
-  lbCaption.hidden = !item.caption;
-
-  const dateStr = formatDate(item.date);
-  lbDate.textContent = dateStr;
-  lbDate.hidden = !dateStr;
-
-  lbCounter.textContent = `${index + 1} / ${imageItems.length}`;
-  lbPrev.disabled = index === 0;
-  lbNext.disabled = index === imageItems.length - 1;
-}
-
-function navigate(direction) {
-  const next = currentIndex + direction;
-  if (next < 0 || next >= imageItems.length) return;
-  currentIndex = next;
-  populateLightbox(currentIndex);
-}
-
-lightbox?.addEventListener('click', (e) => {
-  if (e.target === lightbox) lightbox.close();
-});
-lbClose?.addEventListener('click', () => lightbox?.close());
-lbPrev?.addEventListener('click', () => navigate(-1));
-lbNext?.addEventListener('click', () => navigate(1));
-
-document.addEventListener('keydown', (e) => {
-  if (!lightbox?.open) return;
-  if (e.key === 'ArrowLeft')  { e.preventDefault(); navigate(-1); }
-  if (e.key === 'ArrowRight') { e.preventDefault(); navigate(1);  }
-});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
