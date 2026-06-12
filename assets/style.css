@@ -872,3 +872,99 @@ button {
   pointer-events: none;
   z-index: 99999;
 }
+
+/* ── EXTRAS WATERFALL MASONRY GRID & HOVER EFFECTS ────────────────────────── */
+.gallery-slide.slide-extras {
+  background: var(--bg);
+  height: auto;
+  min-height: 100dvh;
+  align-items: flex-start;
+  padding: var(--sp-24) var(--sp-8) var(--sp-24);
+  scroll-snap-align: start;
+}
+
+.extras-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-12);
+}
+
+.extras-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.1;
+  text-align: center;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--sp-2);
+}
+
+.extras-subtitle {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: var(--sp-8);
+  text-align: center;
+}
+
+.extras-masonry {
+  columns: 4 220px; /* 4 columns down to 220px wide on smaller screens */
+  column-gap: var(--sp-4);
+  width: 100%;
+}
+
+.extras-item {
+  break-inside: avoid;
+  margin-bottom: var(--sp-4);
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+}
+
+.extras-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: grayscale(40%) contrast(90%);
+  transition: filter var(--t-base), transform var(--t-base);
+}
+
+.extras-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(255, 64, 129, 0.2);
+  z-index: 10;
+}
+
+.extras-item:hover img {
+  filter: grayscale(0%) contrast(100%);
+  transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+  .gallery-slide.slide-extras {
+    padding: var(--sp-16) var(--sp-4) var(--sp-16);
+  }
+  .extras-title {
+    font-size: 3rem;
+  }
+  .extras-masonry {
+    columns: 2 180px;
+  }
+}
+

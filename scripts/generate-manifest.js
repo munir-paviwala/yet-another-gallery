@@ -3,75 +3,42 @@
  * yet-another-gallery — generate-manifest.js
  *
  * Scans the images/ directory for image files not already listed in
- * gallery-data.json and appends stub entries that you can fill in.
+ * gallery-data.json and appends stub entries. Also converts non-webp
+ * images (PNG, JPG, JPEG) to optimized WebP.
  *
  * Usage:
  *   node scripts/generate-manifest.js
- *
- * After running:
- *   1. Open gallery-data.json
- *   2. Scroll to the bottom — new stubs will be there
- *   3. Fill in title, caption, date, size for each
- *   4. Optionally insert text items or spacers between images
- *   5. git add . && git commit -m "add new images" && git push
  */
 
 'use strict';
 
-const fs   = require('fs');
+const fs = require('fs');
 const path = require('path');
+const { convertToWebP } = require('./image-optimizer');
 
 // ── Config ────────────────────────────────────────────────────────────────────
-
-const ROOT      = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..');
 const IMAGES_DIR = path.join(ROOT, 'images');
-const DATA_FILE  = path.join(ROOT, 'gallery-data.json');
-
+const DATA_FILE = path.join(ROOT, 'gallery-data.json');
 const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
 
-// ── Load existing manifest ────────────────────────────────────────────────────
-
-let manifest = {
-  meta:  { title: 'yet another gallery', subtitle: 'a collection' },
-  items: [],
-};
-
-if (fs.existsSync(DATA_FILE)) {
-  try {
-    manifest = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-  } catch (err) {
-    console.error('⚠️  Could not parse gallery-data.json:', err.message);
-    console.error('    Fix the JSON syntax error and try again.');
-    process.exit(1);
-  }
-}
-
-// ── Collect already-registered image files ────────────────────────────────────
-
-const registered = new Set(
-  (manifest.items ?? [])
-    .filter((item) => typeof item.file === 'string')
-    .map((item) => item.file)
-);
-
-// ── Walk images/ directory ────────────────────────────────────────────────────
-
-function walkImages(dir) {
+function walkImages(dir, skipExtras = false) {
   const found = [];
   if (!fs.existsSync(dir)) return found;
 
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name.startsWith('.')) continue; // skip hidden files
+    if (entry.name.startsWith('.')) continue; // skip hidden
+    
+    // Skip extras subdirectory if requested (e.g. for scanning main items)
+    if (skipExtras && entry.name === 'extras' && entry.isDirectory()) continue;
 
     const fullPath = path.join(dir, entry.name);
-
     if (entry.isDirectory()) {
-      found.push(...walkImages(fullPath));
+      found.push(...walkImages(fullPath, skipExtras));
     } else {
       const ext = path.extname(entry.name).toLowerCase();
       if (IMAGE_EXTENSIONS.has(ext)) {
-        // Produce a path relative to the repo root, e.g. "images/demo/photo.jpg"
         const rel = path.relative(ROOT, fullPath).split(path.sep).join('/');
         found.push(rel);
       }
@@ -79,25 +46,6 @@ function walkImages(dir) {
   }
   return found;
 }
-
-// Ensure images/ directory exists
-if (!fs.existsSync(IMAGES_DIR)) {
-  console.log('📁  Creating images/ directory...');
-  fs.mkdirSync(IMAGES_DIR, { recursive: true });
-}
-
-const allFiles = walkImages(IMAGES_DIR);
-
-// ── Filter to new files only ──────────────────────────────────────────────────
-
-const newFiles = allFiles.filter((f) => !registered.has(f));
-
-if (newFiles.length === 0) {
-  console.log('✅  No new images found. gallery-data.json is already up to date.');
-  process.exit(0);
-}
-
-// ── Build stubs ───────────────────────────────────────────────────────────────
 
 function makeId() {
   return `item-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
@@ -109,53 +57,168 @@ function nameFromFile(filePath) {
     .trim();
 }
 
-const stubs = newFiles.map((file) => {
-  const ext = path.extname(file).toLowerCase();
-  return {
-    id:      makeId(),
-    type:    ext === '.gif' ? 'gif' : 'image',
-    file,
-    title:   nameFromFile(file),   // ← edit this
-    caption: '',                    // ← edit this
-    date:    {},                    // ← e.g. { "year": 2024, "month": 7, "day": 3 }
-    size:    'full',                // ← 'full' or 'framed'
+async function main() {
+  // Ensure images/ directory exists
+  if (!fs.existsSync(IMAGES_DIR)) {
+    console.log('📁 Creating images/ directory...');
+    fs.mkdirSync(IMAGES_DIR, { recursive: true });
+  }
+
+  // Ensure images/extras/ directory exists
+  const EXTRAS_DIR = path.join(IMAGES_DIR, 'extras');
+  if (!fs.existsSync(EXTRAS_DIR)) {
+    console.log('📁 Creating images/extras/ directory...');
+    fs.mkdirSync(EXTRAS_DIR, { recursive: true });
+  }
+
+  // Load existing manifest
+  let manifest = {
+    meta: { title: 'yet another gallery', subtitle: 'a collection' },
+    items: [],
+    extras: []
   };
-});
 
-// ── Append to manifest and write ──────────────────────────────────────────────
+  if (fs.existsSync(DATA_FILE)) {
+    try {
+      manifest = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    } catch (err) {
+      console.error('⚠️ Could not parse gallery-data.json:', err.message);
+      process.exit(1);
+    }
+  }
 
-if (!Array.isArray(manifest.items)) manifest.items = [];
-manifest.items.push(...stubs);
+  if (!manifest.items) manifest.items = [];
+  if (!manifest.extras) manifest.extras = [];
 
-fs.writeFileSync(DATA_FILE, JSON.stringify(manifest, null, 2) + '\n', 'utf-8');
+  let saveRequired = false;
 
-// ── Report ────────────────────────────────────────────────────────────────────
+  console.log('🔍 Checking existing database items for conversion...');
 
-console.log(`\n✅  Added ${stubs.length} new item${stubs.length !== 1 ? 's' : ''} to gallery-data.json:\n`);
-newFiles.forEach((f) => console.log(`   + ${f}`));
-
-console.log(`
-📝  Next steps:
-   1. Open gallery-data.json
-   2. Scroll to the bottom — new items are there
-   3. Fill in title, caption, and date for each
-      date format: { "year": 2024, "month": 10, "day": 5 }
-      (all fields optional — use as many or as few as you like)
-   4. Change "size" to "framed" if you want a smaller framed look
-   5. Optionally add text or spacer items between images:
-
-      Text item:
-      {
-        "id": "note-001",
-        "type": "text",
-        "title": "a thought",
-        "body": "write anything here. it can be long.",
-        "date": { "year": 2024 }
+  // 1. Migrate existing PNG/JPG images in items to WebP
+  for (const item of manifest.items) {
+    if (item.file) {
+      const ext = path.extname(item.file).toLowerCase();
+      if (['.png', '.jpg', '.jpeg'].includes(ext)) {
+        try {
+          const newPath = await convertToWebP(item.file);
+          if (newPath !== item.file) {
+            item.file = newPath;
+            saveRequired = true;
+          }
+        } catch (err) {
+          console.error(`Failed to convert existing item ${item.file}:`, err);
+        }
       }
+    }
+  }
 
-      Spacer item:
-      { "id": "sp-001", "type": "spacer", "variant": "medium" }
-      (variant: "small" | "medium" | "large" | "rule")
+  // 2. Migrate existing PNG/JPG images in extras to WebP
+  for (const item of manifest.extras) {
+    if (item.file) {
+      const ext = path.extname(item.file).toLowerCase();
+      if (['.png', '.jpg', '.jpeg'].includes(ext)) {
+        try {
+          const newPath = await convertToWebP(item.file);
+          if (newPath !== item.file) {
+            item.file = newPath;
+            saveRequired = true;
+          }
+        } catch (err) {
+          console.error(`Failed to convert existing extra ${item.file}:`, err);
+        }
+      }
+    }
+  }
 
-   6. git add . && git commit -m "add new images" && git push
-`);
+  // 3. Scan for new main images
+  const registeredItems = new Set(manifest.items.filter(i => typeof i.file === 'string').map(i => i.file));
+  const allFiles = walkImages(IMAGES_DIR, true);
+  const newFiles = allFiles.filter(f => !registeredItems.has(f));
+
+  const newStubs = [];
+  if (newFiles.length > 0) {
+    console.log(`📸 Found ${newFiles.length} new main image files. Processing...`);
+    for (const file of newFiles) {
+      try {
+        const ext = path.extname(file).toLowerCase();
+        let finalFile = file;
+        if (['.png', '.jpg', '.jpeg'].includes(ext)) {
+          finalFile = await convertToWebP(file);
+        }
+        const finalExt = path.extname(finalFile).toLowerCase();
+        const stub = {
+          id: makeId(),
+          type: finalExt === '.gif' ? 'gif' : 'image',
+          file: finalFile,
+          title: nameFromFile(finalFile),
+          caption: '',
+          date: { year: new Date().getFullYear(), month: new Date().getMonth() + 1 },
+          size: 'full'
+        };
+        manifest.items.push(stub);
+        newStubs.push(stub);
+        saveRequired = true;
+      } catch (err) {
+        console.error(`Failed to process new file ${file}:`, err);
+      }
+    }
+  }
+
+  // 4. Scan for new extras images
+  const registeredExtras = new Set(manifest.extras.filter(i => typeof i.file === 'string').map(i => i.file));
+  const allExtrasFiles = walkImages(EXTRAS_DIR, false);
+  const newExtrasFiles = allExtrasFiles.filter(f => !registeredExtras.has(f));
+
+  const newExtrasStubs = [];
+  if (newExtrasFiles.length > 0) {
+    console.log(`🖼️ Found ${newExtrasFiles.length} new extra image files. Processing...`);
+    for (const file of newExtrasFiles) {
+      try {
+        const ext = path.extname(file).toLowerCase();
+        let finalFile = file;
+        if (['.png', '.jpg', '.jpeg'].includes(ext)) {
+          finalFile = await convertToWebP(file);
+        }
+        const finalExt = path.extname(finalFile).toLowerCase();
+        const stub = {
+          id: makeId(),
+          type: finalExt === '.gif' ? 'gif' : 'image',
+          file: finalFile,
+          title: nameFromFile(finalFile),
+          caption: '',
+          date: { year: new Date().getFullYear(), month: new Date().getMonth() + 1 }
+        };
+        manifest.extras.push(stub);
+        newExtrasStubs.push(stub);
+        saveRequired = true;
+      } catch (err) {
+        console.error(`Failed to process new extra file ${file}:`, err);
+      }
+    }
+  }
+
+  if (saveRequired) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(manifest, null, 2) + '\n', 'utf-8');
+    console.log(`\n💾 Saved changes to gallery-data.json`);
+  }
+
+  if (newStubs.length === 0 && newExtrasStubs.length === 0) {
+    console.log('✅ Manifest is already fully up to date and all images are optimized.');
+  } else {
+    console.log('\n======================================================');
+    if (newStubs.length > 0) {
+      console.log(`✨ Added ${newStubs.length} new main items:`);
+      newStubs.forEach(s => console.log(`  + ${s.file}`));
+    }
+    if (newExtrasStubs.length > 0) {
+      console.log(`✨ Added ${newExtrasStubs.length} new extra items:`);
+      newExtrasStubs.forEach(s => console.log(`  + ${s.file}`));
+    }
+    console.log('======================================================\n');
+  }
+}
+
+main().catch(err => {
+  console.error('Fatal error running generate-manifest:', err);
+  process.exit(1);
+});

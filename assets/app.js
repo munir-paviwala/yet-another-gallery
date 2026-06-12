@@ -166,6 +166,41 @@ function buildSpacerSlide(item) {
   return el;
 }
 
+// ── Extras Slide Builder ──────────────────────────────────────────────────────
+function buildExtrasSlide(extras) {
+  const slide = document.createElement('div');
+  slide.className = 'gallery-slide slide-extras';
+  slide.setAttribute('role', 'listitem');
+  slide.setAttribute('tabindex', '0');
+  slide.setAttribute('aria-label', 'Extras Gallery');
+
+  const masonryHTML = extras.map(item => {
+    const titleStr = item.title ? `title="${esc(item.title)}"` : '';
+    return `
+      <div class="extras-item" ${titleStr}>
+        <img
+          src="${esc(item.file)}"
+          alt="${esc(item.title ?? '')}"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+    `;
+  }).join('');
+
+  slide.innerHTML = `
+    <div class="extras-container">
+      <h2 class="extras-title">extras</h2>
+      <p class="extras-subtitle">fragments, drafts, and discarded moments</p>
+      <div class="extras-masonry">
+        ${masonryHTML}
+      </div>
+    </div>
+  `;
+
+  return slide;
+}
+
 // ── Gallery Renderer ──────────────────────────────────────────────────────────
 function renderGallery(data) {
   const container = document.getElementById('gallery-scroll-container');
@@ -203,6 +238,13 @@ function renderGallery(data) {
       slides.push(slide);
     }
   });
+
+  // Add extras slide if we have extras
+  if (data.extras && data.extras.length > 0) {
+    const extrasSlide = buildExtrasSlide(data.extras);
+    container.appendChild(extrasSlide);
+    slides.push(extrasSlide);
+  }
 
   // Wire up active-state detection
   initSlideObserver(slides);
