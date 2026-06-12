@@ -118,7 +118,7 @@ button {
 
 /* Atmospheric blobs */
 .landing-blobs {
-  position: fixed; /* Set to fixed to span all slides */
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
@@ -139,8 +139,7 @@ button {
   top: -25%;
   left: -20%;
   opacity: 0.18;
-  animation: blob-drift-1 28s ease-in-out infinite, blob-appear 2s ease both, drift-scroll-1 linear both;
-  animation-timeline: auto, auto, --gallery-scroll;
+  animation: blob-drift-1 28s ease-in-out infinite, blob-appear 2s ease both;
 }
 .blob-2 {
   width: 55vmax;
@@ -149,8 +148,7 @@ button {
   top: -10%;
   right: -15%;
   opacity: 0.12;
-  animation: blob-drift-2 35s ease-in-out infinite, blob-appear 2s ease both 0.3s, drift-scroll-2 linear both;
-  animation-timeline: auto, auto, --gallery-scroll;
+  animation: blob-drift-2 35s ease-in-out infinite, blob-appear 2s ease both 0.3s;
 }
 .blob-3 {
   width: 45vmax;
@@ -159,8 +157,7 @@ button {
   bottom: -10%;
   left: 20%;
   opacity: 0.10;
-  animation: blob-drift-3 22s ease-in-out infinite, blob-appear 2s ease both 0.6s, drift-scroll-1 linear both;
-  animation-timeline: auto, auto, --gallery-scroll;
+  animation: blob-drift-3 22s ease-in-out infinite, blob-appear 2s ease both 0.6s;
 }
 .blob-4 {
   width: 35vmax;
@@ -169,8 +166,7 @@ button {
   bottom: 10%;
   right: 10%;
   opacity: 0.20;
-  animation: blob-drift-2 30s ease-in-out infinite reverse, blob-appear 2s ease both 1s, drift-scroll-2 linear both;
-  animation-timeline: auto, auto, --gallery-scroll;
+  animation: blob-drift-2 30s ease-in-out infinite reverse, blob-appear 2s ease both 1s;
 }
 
 @keyframes blob-appear { from { opacity: 0; } }
@@ -191,7 +187,7 @@ button {
 
 /* Geometric mandala-inspired pattern */
 .landing-pattern {
-  position: fixed; /* Fixed to cover whole page */
+  position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
@@ -206,13 +202,11 @@ button {
     );
   background-size: 120px 120px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-  animation: rotate-scroll linear both;
-  animation-timeline: --gallery-scroll;
 }
 
 /* Grain overlay */
 .landing-grain {
-  position: fixed; /* Fixed to cover whole page */
+  position: absolute;
   inset: 0;
   z-index: 2;
   opacity: 0.04;
@@ -318,18 +312,6 @@ button {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes rotate-scroll {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(120deg); }
-}
-@keyframes drift-scroll-1 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(8vw, -6vh) scale(1.1); }
-}
-@keyframes drift-scroll-2 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(-8vw, 6vh) scale(0.9); }
-}
 
 /* ══════════════════════════════════════════════════════════
    SCROLL-SNAP GALLERY
@@ -343,8 +325,6 @@ button {
   /* Stick to viewport after hero */
   position: sticky;
   top: 0;
-  scroll-timeline-name: --gallery-scroll;
-  scroll-timeline-axis: y;
 }
 
 /* ── SLIDE BASE ───────────────────────────────────────────── */
@@ -891,81 +871,4 @@ button {
   inset: 0;
   pointer-events: none;
   z-index: 99999;
-}
-
-/* ══════════════════════════════════════════════════════════
-   AUDIO BUTTON
-   ══════════════════════════════════════════════════════════ */
-.audio-btn {
-  position: fixed;
-  top: var(--sp-4);
-  right: calc(var(--sp-4) + 155px);
-  z-index: 100;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-muted);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--t-fast);
-  cursor: pointer;
-}
-.audio-btn:hover {
-  background: rgba(255,64,129,0.2);
-  color: var(--text);
-  border-color: var(--accent);
-  transform: scale(1.05);
-}
-.audio-btn .material-symbols-outlined {
-  font-size: 1.2rem;
-  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-}
-
-/* ══════════════════════════════════════════════════════════
-   VERTICAL DOT NAVIGATION
-   ══════════════════════════════════════════════════════════ */
-.dot-nav {
-  position: fixed;
-  right: var(--sp-6);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  z-index: 100;
-  pointer-events: auto;
-}
-
-.dot-nav-item {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all var(--t-base);
-  cursor: pointer;
-  position: relative;
-}
-
-.dot-nav-item::after {
-  /* expand hit area */
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-}
-
-.dot-nav-item:hover {
-  background: var(--gold);
-  transform: scale(1.3);
-}
-
-.dot-nav-item.active {
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-  transform: scale(1.4);
 }
