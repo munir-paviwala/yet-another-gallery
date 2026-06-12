@@ -11,6 +11,18 @@
       "body": "a small place for things i find beautiful, interesting, or worth sharing.\n\nno real theme. just a collection of moments that made me stop and look a little longer."
     },
     {
+      "id": "item-mq99qenr-m4h3",
+      "type": "image",
+      "file": "images/you-work-better-when-not.webp",
+      "title": "Stealing non-Perfectionism",
+      "caption": "Starting simple. I just copied/stole the quote design, and added the side belt of design - simple start",
+      "date": {
+        "year": 2026,
+        "month": 6
+      },
+      "size": "full"
+    },
+    {
       "id": "item-mq99qenr-h0xe",
       "type": "image",
       "file": "images/overlay.webp",
@@ -20,7 +32,7 @@
         "year": 2026,
         "month": 6
       },
-      "size": "framed"
+      "size": "full"
     },
     {
       "id": "item-mq99qenr-vv99",
@@ -47,18 +59,6 @@
         "date": 11
       },
       "size": "full"
-    },
-    {
-      "id": "item-mq99qenr-4bb7",
-      "type": "image",
-      "file": "images/onemoretime.webp",
-      "title": "Simple flat patterns",
-      "caption": "Flat patterns is how I started as well. The things that are abound in all the corporate-ised posts in all my social media feeds. The gradients - a harsh reminder.",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "framed"
     },
     {
       "id": "item-mq9eiccy-o42m",
@@ -92,12 +92,12 @@
         "month": 6,
         "date": 12
       },
-      "size": "full"
+      "size": "framed"
     },
     {
-      "id": "item-mqanm5v9-7juv",
+      "id": "item-mqanm5v9-8z36",
       "type": "image",
-      "file": "images/skyoverlays_2.webp",
+      "file": "images/skyoverlays.webp",
       "title": "Patterned Skies 2",
       "caption": "In a world if I imagine, the skies would have changing textile patterns",
       "date": {
@@ -115,33 +115,45 @@
       "date": {
         "year": 2026
       }
-    },
+    }
+  ],
+  "extras": [
     {
-      "id": "item-mqanm5v9-8z36",
+      "id": "item-mqanm5v9-7juv",
       "type": "image",
-      "file": "images/skyoverlays.webp",
-      "title": "skyoverlays",
-      "caption": "",
+      "file": "images/extras/skyoverlays_2.webp",
+      "title": "Patterned Skies 2",
+      "caption": "In a world if I imagine, the skies would have changing textile patterns",
       "date": {
         "year": 2026,
         "month": 6,
         "date": 12
       },
       "size": "full"
-    }
-  ],
-  "extras": [
+    },
     {
-      "id": "item-mq99qenr-m4h3",
+      "id": "item-mqap3q9x-5a78",
       "type": "image",
-      "file": "images/you-work-better-when-not.webp",
-      "title": "Stealing non-Perfectionism",
-      "caption": "Starting simple. I just copied/stole the quote design, and added the side belt of design - simple start",
+      "file": "images/extras/you-work-better-when-not.webp",
+      "title": "you work better when not",
+      "caption": "",
       "date": {
         "year": 2026,
         "month": 6
       },
       "size": "full"
+    },
+    {
+      "id": "item-mq99qenr-4bb7",
+      "type": "image",
+      "file": "images/extras/onemoretime.webp",
+      "title": "Simple flat patterns",
+      "caption": "Flat patterns is how I started as well. The things that are abound in all the corporate-ised posts in all my social media feeds. The gradients - a harsh reminder.",
+      "date": {
+        "year": 2026,
+        "month": 6
+      },
+      "size": "framed"
     }
   ]
 }
