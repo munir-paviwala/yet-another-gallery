@@ -395,6 +395,13 @@ button {
     transparent 100%
   );
   pointer-events: auto;
+  transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
+}
+
+body.is-inactive .slide-caption-content {
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
 }
 
 /* Caption text */
@@ -766,6 +773,13 @@ button {
   text-transform: uppercase;
   transition: all var(--t-fast);
 }
+
+body.is-inactive .fullscreen-btn {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+
 .fullscreen-btn:hover {
   background: rgba(255,64,129,0.2);
   color: var(--text);

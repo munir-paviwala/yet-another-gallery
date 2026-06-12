@@ -22,6 +22,22 @@ async function loadGalleryData() {
   }
 }
 
+// ── Inactivity Timer ──────────────────────────────────────────────────────────
+let inactivityTimer;
+function resetInactivityTimer() {
+  document.body.classList.remove('is-inactive');
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    document.body.classList.add('is-inactive');
+  }, 2500); // Hide after 2.5s of inactivity
+}
+
+// Listen for interactions to wake up the UI
+['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'wheel'].forEach(evt => {
+  window.addEventListener(evt, resetInactivityTimer, { passive: true });
+});
+resetInactivityTimer();
+
 // ── Utilities ─────────────────────────────────────────────────────────────────
 function formatDate(date) {
   if (!date || Object.keys(date).length === 0) return '';
