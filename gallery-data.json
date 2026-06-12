@@ -11,21 +11,9 @@
       "body": "a small place for things i find beautiful, interesting, or worth sharing.\n\nno real theme. just a collection of moments that made me stop and look a little longer."
     },
     {
-      "id": "item-mqaoupvr-sh1f",
-      "type": "image",
-      "file": "images/you-work-better-when-not.webp",
-      "title": "Stealing non-Perfectionism",
-      "caption": "Starting simple. I just copied/stole the quote design, and added the side belt of design - simple start",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
       "id": "item-mq99qenr-h0xe",
       "type": "image",
-      "file": "images/overlay.png",
+      "file": "images/overlay.webp",
       "title": "Textured textile tech walls",
       "caption": "This was first time, I played with textures digitally. I was drawn to textures that are more familiar, but absent from our representations in digital world.",
       "date": {
@@ -37,7 +25,7 @@
     {
       "id": "item-mq99qenr-vv99",
       "type": "image",
-      "file": "images/first step trying.png",
+      "file": "images/first-step-trying.webp",
       "title": "Selective seeing",
       "caption": "Stealing, cutting and zooming into images to show new ways of seeing. Historian-esque, ofcourse. ",
       "date": {
@@ -50,7 +38,7 @@
     {
       "id": "item-mq99qenr-6qmj",
       "type": "image",
-      "file": "images/Document.png",
+      "file": "images/document.webp",
       "title": "Textures - A thread",
       "caption": "While finding my style in Digital collage-ing. I felt a lack. Something was missing... when I found good textures, I knew that I missed textures in all my scrolling Insta and YouTube.",
       "date": {
@@ -63,7 +51,7 @@
     {
       "id": "item-mq99qenr-4bb7",
       "type": "image",
-      "file": "images/onemoretime.png",
+      "file": "images/onemoretime.webp",
       "title": "Simple flat patterns",
       "caption": "Flat patterns is how I started as well. The things that are abound in all the corporate-ised posts in all my social media feeds. The gradients - a harsh reminder.",
       "date": {
@@ -84,7 +72,7 @@
     {
       "id": "item-mq99qenr-4qtl",
       "type": "image",
-      "file": "images/textile bg.png",
+      "file": "images/textile-bg.webp",
       "title": "Picking Textile Dreams w/ Mamma",
       "caption": "Colors, textiles, and asethetics with Mamma - clearly we both have quite different taste at times, but we share so much. So immemorialising a few shared ones. ",
       "date": {
@@ -96,7 +84,7 @@
     {
       "id": "item-mqanm5v9-qxkn",
       "type": "image",
-      "file": "images/skyoverlays_3.png",
+      "file": "images/skyoverlays_3.webp",
       "title": "The Patterned Skies",
       "caption": "In a world if I imagine, the skies would have changing textile patterns",
       "date": {
@@ -109,7 +97,7 @@
     {
       "id": "item-mqanm5v9-7juv",
       "type": "image",
-      "file": "images/skyoverlays_2.png",
+      "file": "images/skyoverlays_2.webp",
       "title": "Patterned Skies 2",
       "caption": "In a world if I imagine, the skies would have changing textile patterns",
       "date": {
@@ -131,7 +119,7 @@
     {
       "id": "item-mqanm5v9-8z36",
       "type": "image",
-      "file": "images/skyoverlays.png",
+      "file": "images/skyoverlays.webp",
       "title": "skyoverlays",
       "caption": "",
       "date": {
@@ -140,121 +128,13 @@
         "date": 12
       },
       "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-so37",
-      "type": "image",
-      "file": "images/document.webp",
-      "title": "document",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-trqe",
-      "type": "image",
-      "file": "images/first-step-trying.webp",
-      "title": "first step trying",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-h70q",
-      "type": "image",
-      "file": "images/onemoretime.webp",
-      "title": "onemoretime",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-arpd",
-      "type": "image",
-      "file": "images/overlay.webp",
-      "title": "overlay",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-fzeg",
-      "type": "image",
-      "file": "images/skyoverlays.webp",
-      "title": "skyoverlays",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-dich",
-      "type": "image",
-      "file": "images/skyoverlays_2.webp",
-      "title": "skyoverlays 2",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-8l0r",
-      "type": "image",
-      "file": "images/skyoverlays_3.webp",
-      "title": "skyoverlays 3",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
-      "id": "item-mqaoua7n-hwhc",
-      "type": "image",
-      "file": "images/textile-bg.webp",
-      "title": "textile bg",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
     }
   ],
   "extras": [
     {
-      "id": "item-mqaoua7n-7tj5",
-      "type": "image",
-      "file": "images/extras/you-work-better-when-not.webp",
-      "title": "you work better when not",
-      "caption": "",
-      "date": {
-        "year": 2026,
-        "month": 6
-      },
-      "size": "full"
-    },
-    {
       "id": "item-mq99qenr-m4h3",
       "type": "image",
-      "file": "images/you work better when not .png",
+      "file": "images/you-work-better-when-not.webp",
       "title": "Stealing non-Perfectionism",
       "caption": "Starting simple. I just copied/stole the quote design, and added the side belt of design - simple start",
       "date": {
