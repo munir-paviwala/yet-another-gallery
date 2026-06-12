@@ -209,7 +209,7 @@ function renderGallery(data) {
   initCounterBadge(slides);
 }
 
-// ── Fullscreen Toggle ─────────────────────────────────────────────────────────
+// ── Fullscreen Toggle & Resnap ────────────────────────────────────────────────
 function tryEnterFullscreen() {
   if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
     document.documentElement.requestFullscreen().catch(() => {
@@ -217,6 +217,28 @@ function tryEnterFullscreen() {
     });
   }
 }
+
+// Force scroll snap alignment on layout/size changes (fixes frozen slides)
+function forceResnap() {
+  const container = document.getElementById('gallery-scroll-container');
+  if (!container) return;
+  const activeSlide = container.querySelector('.gallery-slide.is-active');
+  if (activeSlide) {
+    activeSlide.scrollIntoView({ block: 'start' });
+  }
+}
+
+window.addEventListener('resize', forceResnap);
+document.addEventListener('fullscreenchange', () => {
+  forceResnap();
+  if (fullscreenBtn) {
+    if (!document.fullscreenElement) {
+      fullscreenBtn.textContent = 'enter fullscreen';
+    } else {
+      fullscreenBtn.textContent = 'exit fullscreen';
+    }
+  }
+});
 
 // Auto-enter fullscreen on first interaction
 document.body.addEventListener('click', function autoFullscreen() {
@@ -234,14 +256,6 @@ if (fullscreenBtn) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
       }
-    }
-  });
-
-  document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-      fullscreenBtn.textContent = 'enter fullscreen';
-    } else {
-      fullscreenBtn.textContent = 'exit fullscreen';
     }
   });
 }

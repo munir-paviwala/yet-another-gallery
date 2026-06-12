@@ -91,7 +91,7 @@ app.post('/api/data', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '127.0.0.1', () => {
   console.log(`\n==============================================`);
   console.log(`✨ Gallery Editor running at: http://localhost:${PORT}`);
   console.log(`==============================================\n`);
