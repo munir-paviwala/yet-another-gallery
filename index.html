@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,54 +19,53 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Space+Grotesk:wght@300;400;500&display=swap"
-    rel="stylesheet"
-  >
+    rel="stylesheet">
 
   <link rel="stylesheet" href="assets/style.css?v=2">
 </head>
+
 <body>
-
-  <!-- ══ LANDING HERO ══════════════════════════════════════════════════════ -->
-  <section class="landing" id="landing">
-
-    <!-- Atmospheric blobs -->
-    <div class="landing-blobs" aria-hidden="true">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-      <div class="blob blob-4"></div>
-    </div>
-
-    <!-- Geometric pattern overlay -->
-    <div class="landing-pattern" aria-hidden="true"></div>
-
-    <!-- Film-grain overlay -->
-    <div class="landing-grain" aria-hidden="true"></div>
-
-    <!-- Hero text -->
-    <div class="landing-content">
-      <span class="hero-eyebrow">a personal collection</span>
-
-      <h1 class="hero-title">
-        yet another<br>gallery
-      </h1>
-
-      <p class="hero-subtitle">
-        images, thoughts, and things made by someone who finds beauty
-        in ordinary moments. no particular order. no particular theme.
-      </p>
-    </div>
-
-    <!-- Scroll hint -->
-    <div class="scroll-hint" aria-hidden="true">
-      <span class="scroll-hint-label">scroll to explore</span>
-      <div class="scroll-hint-line"></div>
-    </div>
-
-  </section>
 
   <!-- ══ GALLERY (scroll-snap slides) ═════════════════════════════════════ -->
   <div class="gallery-scroll-container" id="gallery-scroll-container" role="list">
+    <!-- ══ LANDING HERO ══════════════════════════════════════════════════════ -->
+    <section class="landing gallery-slide" id="landing">
+
+      <!-- Atmospheric blobs -->
+      <div class="landing-blobs" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+      </div>
+
+      <!-- Geometric pattern overlay -->
+      <div class="landing-pattern" aria-hidden="true"></div>
+
+      <!-- Film-grain overlay -->
+      <div class="landing-grain" aria-hidden="true"></div>
+
+      <!-- Hero text -->
+      <div class="landing-content">
+        <span class="hero-eyebrow">a collection</span>
+
+        <h1 class="hero-title">
+          yet another<br>gallery
+        </h1>
+
+        <p class="hero-subtitle">
+          designs reflecting my mind, aesthetics and moments i find worth keeping
+        </p>
+      </div>
+
+      <!-- Scroll hint -->
+      <div class="scroll-hint" aria-hidden="true">
+        <span class="scroll-hint-label">scroll to explore</span>
+        <div class="scroll-hint-line"></div>
+      </div>
+
+    </section>
+
     <!-- Slides injected by app.js -->
   </div>
 
@@ -75,4 +75,5 @@
 
   <script src="assets/app.js" type="module"></script>
 </body>
+
 </html>

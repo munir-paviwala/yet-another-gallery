@@ -81,7 +81,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow: hidden; /* Hide body overflow to eliminate double scrollbars */
 }
 
 img {
@@ -260,10 +260,10 @@ button {
 
 .hero-subtitle {
   font-family: var(--font-ui);
-  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  font-size: clamp(1rem, 2.2vw, 1.25rem); /* Increased size */
   font-weight: 300;
   color: var(--text-muted);
-  max-width: 42ch;
+  max-width: 48ch; /* Increased max-width for balance */
   margin: 0 auto;
   line-height: 1.85;
   opacity: 0;
@@ -837,4 +837,38 @@ button {
     animation: none !important;
     opacity: 1 !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════════
+   WELCOME FULLSCREEN BUTTON & SPARKLE CANVAS
+   ══════════════════════════════════════════════════════════ */
+.welcome-fullscreen-btn {
+  display: inline-block;
+  margin-top: var(--sp-8);
+  background: var(--accent);
+  color: var(--text);
+  padding: 0.8rem 2.2rem;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-glow);
+  transition: all var(--t-base);
+  cursor: pointer;
+}
+.welcome-fullscreen-btn:hover {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 30px rgba(255, 64, 129, 0.2);
+}
+
+.sparkle-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
 }

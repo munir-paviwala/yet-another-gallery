@@ -8,15 +8,7 @@
       "id": "opening",
       "type": "text",
       "title": "Welcome",
-      "body": "this is a small place for things i find beautiful, interesting, or worth keeping.\n\nthere's no real theme. no careful curation. just a collection of moments that made me stop and look a little longer.",
-      "date": {
-        "year": 2024
-      }
-    },
-    {
-      "id": "spacer-end",
-      "type": "spacer",
-      "variant": "rule"
+      "body": "a small place for things i find beautiful, interesting, or worth sharing.\n\nno real theme. just a collection of moments that made me stop and look a little longer."
     },
     {
       "id": "item-mq99qenr-m4h3",

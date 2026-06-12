@@ -144,12 +144,29 @@ function buildTextSlide(item) {
   slide.className = 'gallery-slide slide-text';
   slide.setAttribute('role', 'listitem');
 
+  const isOpening = item.id === 'opening';
+
   slide.innerHTML = `
     <div class="slide-text-inner">
       ${item.title  ? `<h2 class="slide-text-title">${esc(item.title)}</h2>` : ''}
       ${item.body   ? `<div class="slide-text-body">${esc(item.body)}</div>` : ''}
+      ${isOpening ? `
+        <button class="welcome-fullscreen-btn" id="welcome-fullscreen-btn">
+          enter fullscreen mode
+        </button>
+      ` : ''}
     </div>
   `;
+
+  if (isOpening) {
+    const btn = slide.querySelector('#welcome-fullscreen-btn');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tryEnterFullscreen();
+      });
+    }
+  }
 
   return slide;
 }
@@ -338,6 +355,112 @@ async function init() {
   }
 
   renderGallery(data);
+  initSparkleTrail();
+}
+
+// ── Particle Sparkle Trail ───────────────────────────────────────────────────
+function initSparkleTrail() {
+  const canvas = document.createElement('canvas');
+  canvas.className = 'sparkle-canvas';
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const colors = ['#ff4081', '#ffc107', '#00bcd4', '#ffd54f', '#ffffff'];
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 3 + 1.5;
+      this.speedX = Math.random() * 1.6 - 0.8;
+      this.speedY = Math.random() * 1.6 - 0.8 - 0.4; // drift up slightly
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.alpha = 1;
+      this.decay = Math.random() * 0.02 + 0.015;
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.alpha -= this.decay;
+    }
+
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      
+      // Draw a 4-point star shape
+      ctx.beginPath();
+      const cx = this.x;
+      const cy = this.y;
+      const spikes = 4;
+      const outerRadius = this.size;
+      const innerRadius = this.size / 2.5;
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      ctx.moveTo(cx, cy - outerRadius)
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    // Disable sparkles when hovering over images/captions
+    const target = e.target;
+    if (
+      target.closest('.slide-img') || 
+      target.closest('.slide-framed-img') || 
+      target.closest('.slide-caption-content') ||
+      target.closest('img')
+    ) {
+      return;
+    }
+
+    for (let i = 0; i < 2; i++) {
+      particles.push(new Particle(e.clientX, e.clientY));
+    }
+  });
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.update();
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+      } else {
+        p.draw();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
 
 init();
