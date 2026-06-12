@@ -20,30 +20,28 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Space+Grotesk:wght@300;400;500&display=swap"
     rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=block" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/style.css?v=2">
 </head>
 
 <body>
 
+  <!-- Global Atmospheric Backgrounds & Textures -->
+  <div class="landing-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+
+  <div class="landing-pattern" aria-hidden="true"></div>
+  <div class="landing-grain" aria-hidden="true"></div>
+
   <!-- ══ GALLERY (scroll-snap slides) ═════════════════════════════════════ -->
   <div class="gallery-scroll-container" id="gallery-scroll-container" role="list">
     <!-- ══ LANDING HERO ══════════════════════════════════════════════════════ -->
     <section class="landing gallery-slide" id="landing">
-
-      <!-- Atmospheric blobs -->
-      <div class="landing-blobs" aria-hidden="true">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div class="blob blob-4"></div>
-      </div>
-
-      <!-- Geometric pattern overlay -->
-      <div class="landing-pattern" aria-hidden="true"></div>
-
-      <!-- Film-grain overlay -->
-      <div class="landing-grain" aria-hidden="true"></div>
 
       <!-- Hero text -->
       <div class="landing-content">
@@ -68,6 +66,10 @@
 
     <!-- Slides injected by app.js -->
   </div>
+
+  <button class="audio-btn" id="audio-btn" aria-label="Toggle Ambient Audio">
+    <span class="material-symbols-outlined">volume_off</span>
+  </button>
 
   <button class="fullscreen-btn" id="fullscreen-btn" aria-label="Toggle Fullscreen">
     enter fullscreen

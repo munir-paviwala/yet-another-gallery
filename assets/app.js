@@ -144,29 +144,12 @@ function buildTextSlide(item) {
   slide.className = 'gallery-slide slide-text';
   slide.setAttribute('role', 'listitem');
 
-  const isOpening = item.id === 'opening';
-
   slide.innerHTML = `
     <div class="slide-text-inner">
       ${item.title  ? `<h2 class="slide-text-title">${esc(item.title)}</h2>` : ''}
       ${item.body   ? `<div class="slide-text-body">${esc(item.body)}</div>` : ''}
-      ${isOpening ? `
-        <button class="welcome-fullscreen-btn" id="welcome-fullscreen-btn">
-          enter fullscreen mode
-        </button>
-      ` : ''}
     </div>
   `;
-
-  if (isOpening) {
-    const btn = slide.querySelector('#welcome-fullscreen-btn');
-    if (btn) {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        tryEnterFullscreen();
-      });
-    }
-  }
 
   return slide;
 }
@@ -223,7 +206,7 @@ function renderGallery(data) {
 
   // Wire up active-state detection
   initSlideObserver(slides);
-  initCounterBadge(slides);
+  initDotNavigation(container, slides);
 }
 
 // ── Fullscreen Toggle & Resnap ────────────────────────────────────────────────
@@ -300,35 +283,58 @@ function initSlideObserver(slides) {
   slides.forEach((s) => observer.observe(s));
 }
 
-// ── Floating Slide Counter ─────────────────────────────────────────────────────
-function initCounterBadge(slides) {
-  const badge = document.createElement('div');
-  badge.className = 'slide-counter-badge';
-  badge.id = 'slide-counter-badge';
-  document.body.appendChild(badge);
+// ── Vertical Dot Navigation ───────────────────────────────────────────────────
+function initDotNavigation(container, slides) {
+  const hero = document.getElementById('landing');
+  const allTargets = [];
+  if (hero) allTargets.push(hero);
 
-  const countedSlides = slides.filter(s => !s.classList.contains('slide-spacer'));
-  const total = countedSlides.length;
-  let hideTimer;
+  slides.forEach(s => {
+    if (!s.classList.contains('slide-spacer')) {
+      allTargets.push(s);
+    }
+  });
+
+  if (allTargets.length === 0) return;
+
+  const nav = document.createElement('div');
+  nav.className = 'dot-nav';
+  nav.setAttribute('role', 'navigation');
+  nav.setAttribute('aria-label', 'Gallery slides navigation');
+  document.body.appendChild(nav);
+
+  const dots = [];
+
+  allTargets.forEach((target, index) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot-nav-item';
+    if (index === 0) dot.classList.add('active');
+    dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+    
+    dot.addEventListener('click', () => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    nav.appendChild(dot);
+    dots.push(dot);
+  });
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const idx = countedSlides.indexOf(entry.target);
+          const idx = allTargets.indexOf(entry.target);
           if (idx !== -1) {
-            badge.textContent = `${idx + 1} / ${total}`;
-            badge.classList.add('visible');
-            clearTimeout(hideTimer);
-            hideTimer = setTimeout(() => badge.classList.remove('visible'), 2200);
+            dots.forEach(d => d.classList.remove('active'));
+            dots[idx].classList.add('active');
           }
         }
       });
     },
-    { threshold: 0.6 }
+    { threshold: 0.5 }
   );
 
-  countedSlides.forEach((s) => observer.observe(s));
+  allTargets.forEach(t => observer.observe(t));
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -356,6 +362,12 @@ async function init() {
 
   renderGallery(data);
   initSparkleTrail();
+
+  // Setup ambient audio toggler
+  const audioBtn = document.getElementById('audio-btn');
+  if (audioBtn) {
+    audioBtn.addEventListener('click', toggleAmbientAudio);
+  }
 }
 
 // ── Particle Sparkle Trail ───────────────────────────────────────────────────
@@ -461,6 +473,118 @@ function initSparkleTrail() {
     requestAnimationFrame(animate);
   }
   animate();
+}
+
+// ── Procedural Tanpura Synth Drone & Vinyl Crackle ──────────────────────────
+let audioCtx = null;
+let isAudioPlaying = false;
+let tanpuraNodes = [];
+
+function toggleAmbientAudio() {
+  const btn = document.getElementById('audio-btn');
+  const icon = btn ? btn.querySelector('.material-symbols-outlined') : null;
+
+  if (isAudioPlaying) {
+    if (audioCtx) {
+      audioCtx.suspend();
+    }
+    isAudioPlaying = false;
+    if (icon) icon.textContent = 'volume_off';
+  } else {
+    if (!audioCtx) {
+      initTanpuraSynth();
+    } else {
+      audioCtx.resume();
+    }
+    isAudioPlaying = true;
+    if (icon) icon.textContent = 'volume_up';
+  }
+}
+
+function initTanpuraSynth() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  // Master gain control
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0.08, audioCtx.currentTime); // very soft/background drone
+  masterGain.connect(audioCtx.destination);
+
+  const fundamentalFreq = 65.4; // deep C2 drone
+  
+  // Low Triangle Oscillator for the deep warm foundation
+  const subOsc = audioCtx.createOscillator();
+  subOsc.type = 'triangle';
+  subOsc.frequency.setValueAtTime(fundamentalFreq, audioCtx.currentTime);
+  const subGain = audioCtx.createGain();
+  subGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+  
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(110, audioCtx.currentTime);
+
+  subOsc.connect(subGain);
+  subGain.connect(filter);
+  filter.connect(masterGain);
+  subOsc.start();
+  tanpuraNodes.push(subOsc);
+
+  // Plucking string simulation nodes (C3, G3, C4)
+  const strings = [
+    { freq: fundamentalFreq * 2, delay: 0, rate: 4.2 }, 
+    { freq: fundamentalFreq * 3, delay: 1.1, rate: 4.2 }, 
+    { freq: fundamentalFreq * 3, delay: 2.2, rate: 4.2 }, 
+    { freq: fundamentalFreq * 4, delay: 3.3, rate: 4.2 }, 
+  ];
+
+  strings.forEach((str) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(str.freq, audioCtx.currentTime);
+
+    const stringGain = audioCtx.createGain();
+    stringGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    
+    const pluck = () => {
+      const t = audioCtx.currentTime;
+      stringGain.gain.setTargetAtTime(0.24, t, 0.08); // Pluck strike
+      stringGain.gain.setTargetAtTime(0.001, t + 0.25, 1.4); // Slow ring decay
+    };
+
+    setTimeout(() => {
+      if (!isAudioPlaying) return;
+      pluck();
+      setInterval(() => {
+        if (isAudioPlaying) pluck();
+      }, str.rate * 1000);
+    }, str.delay * 1000);
+
+    osc.connect(stringGain);
+    stringGain.connect(masterGain);
+    osc.start();
+    tanpuraNodes.push(osc);
+  });
+
+  // Procedural Vinyl record surface crackle (Low Sparsity White Noise Buffer)
+  const bufferSize = audioCtx.sampleRate * 2.5; 
+  const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    let val = Math.random() * 2 - 1;
+    // Sparse, filter crackles
+    output[i] = Math.abs(val) > 0.985 ? val * 0.015 : val * 0.002;
+  }
+
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  noise.loop = true;
+
+  const noiseGain = audioCtx.createGain();
+  noiseGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+
+  noise.connect(noiseGain);
+  noiseGain.connect(masterGain);
+  noise.start();
+  tanpuraNodes.push(noise);
 }
 
 init();
