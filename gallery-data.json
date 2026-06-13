@@ -115,6 +115,30 @@
       "date": {
         "year": 2026
       }
+    },
+    {
+      "id": "item-mqbsy5u8-9urw",
+      "type": "image",
+      "file": "images/do-it-for-the-plot-bos-sky.webp",
+      "title": "Patterned Skies 3",
+      "caption": "In the series of imagination, why not make the sky a bit more pinterest-ing.",
+      "date": {
+        "year": 2026,
+        "month": 6
+      },
+      "size": "full"
+    },
+    {
+      "id": "item-mqbsy69g-ydfz",
+      "type": "image",
+      "file": "images/rainbow-dreams.webp",
+      "title": "rainbow dreams",
+      "caption": "Just a simple overlay - 2010s pinterest core.",
+      "date": {
+        "year": 2026,
+        "month": 6
+      },
+      "size": "full"
     }
   ],
   "extras": [
